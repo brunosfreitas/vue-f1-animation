@@ -1,28 +1,55 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app" class="app">
+    <aside class="app__board">
+      <RaceList msg="Welcome to Your Vue.js App"/>
+    </aside>
+    <div class="app__view">
+      <RaceInfo></RaceInfo>
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import RaceList from './components/RaceList.vue'
+import RaceInfo from './components/RaceInfo.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    RaceList,
+    RaceInfo
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  body {
+  margin: 0;
+  height: 100vh;
+  width: 100vw;
+  font-family: 'Mukta', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  background-color: #1b1b1e;
+  color: #e1e5ee;  
+  border-color: #262728;
 }
+
+.app {
+  font-size: 16px;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(150px, 25%) 1fr;
+}
+
+  .app__board {
+    background-color: #0c0c0d;
+    padding-top: 60px;
+  }
+
+  .app__view {
+
+  }
 </style>
