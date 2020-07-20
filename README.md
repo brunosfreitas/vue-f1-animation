@@ -2,6 +2,9 @@
 
 http://ergast.com/mrd/
 
+lap by lap 
+http://ergast.com/api/f1/current/last/laps?limit=3000&offset=0.json
+
 ## Project setup
 ```
 npm install
