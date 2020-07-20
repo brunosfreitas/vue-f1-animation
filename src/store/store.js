@@ -2,7 +2,9 @@ import Vue from "vue";
 import Vuex from "vuex";
 import axios from "axios";
 import VueAxios from "vue-axios";
-import _ from 'lodash';
+import getConstructorExtraInfo from "./helpers";
+// import _ from 'lodash';
+// import { getConstructorExtraInfo } from './helpers';
 
 Vue.use(Vuex);
 Vue.use(VueAxios, axios);
@@ -20,15 +22,19 @@ export default new Vuex.Store({
         return race[0];
     },
     racePodium: state => {
-        let race = {...state.raceResults.Races}
-        race = _.orderBy(
-            race[0]?.Results, 
-            function (obj) {
-                console.log(parseInt(obj.position, 10));
-                return parseInt(obj.position, 10);
-            },
-            ['asc']);
-        return race;
+        let podium = {...state.raceResults?.Races}
+        podium = podium[0]?.Results;
+
+        // adding aditional construtor info
+        let enhancedPodium = podium?.map(el => 
+          {
+              const aditionalInfo = getConstructorExtraInfo(el.Constructor.constructorId);
+              el.Constructor = ({...el.Constructor, ...aditionalInfo})
+              return el;
+              // const Constructor = el.Constructor;
+          }
+        )
+        return enhancedPodium;
     }
   },
   actions: {

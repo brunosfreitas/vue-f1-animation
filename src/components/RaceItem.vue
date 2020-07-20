@@ -2,6 +2,7 @@
   <div class="raceItem" :style="scuderiaColor">
     <p class="raceItem__racer">{{ racer.position }} - {{ racer.Driver.familyName }} <span class="raceItem__constructor">{{ constructorName }}</span></p>
     <p class="raceItem__timeDiff">{{ timeDiff }}</p>
+    <img class="raceItem__image" :src="racer.Constructor.carImage" :alt="constructorName"/>
   </div>
 </template>
 
@@ -17,7 +18,7 @@ export default {
   computed: {
     scuderiaColor: function() {
         return {
-          borderLeft: "5px solid " + this.racer.color
+          borderLeft: "5px solid " + this.racer.Constructor.color
         };
       },
     constructorName: function() {
@@ -33,7 +34,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .raceItem {
-    height: 60px;
+    /* height: 60px; */
     padding-left: 30px;
   }
 
@@ -48,5 +49,10 @@ export default {
 
   .raceItem__racer {
     margin-bottom: 0;
+  }
+
+  .raceItem__image {
+    height: 40px;
+    width: auto;
   }
 </style>

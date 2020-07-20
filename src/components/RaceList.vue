@@ -3,6 +3,14 @@
     <h1 class="raceList__title">F1 race!</h1>
     <p></p>
     <button v-on:click="shuffle">Shuffle</button>
+
+    <transition-group name="flip-list" tag="ul" class="raceList__list">
+      <li v-for="racer in racers" v-bind:key="racer.name" class="raceList__listItem">
+        {{racer.name}} {{racer.time}}
+      </li>
+  </transition-group>
+
+
     <transition-group name="flip-list" tag="ul" class="raceList__list">
       <li v-for="racer in racePodium" v-bind:key="racer.number" class="raceList__listItem">
         <RaceItem :racer="racer"/>
@@ -44,7 +52,9 @@ export default {
   },
   methods: {
     shuffle: function () {
-      this.racers = _.shuffle(this.racers)
+      this.racers = _.shuffle(this.racers);
+      this.racePodium = _.shuffle(this.racePodium);
+      return;
     }
   },
   computed: {

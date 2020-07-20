@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="app">
     <aside class="app__board">
-      <RaceList msg="Welcome to Your Vue.js App"/>
+      <RaceList/>
     </aside>
     <div class="app__view">
       <RaceInfo></RaceInfo>
@@ -26,7 +26,7 @@ export default {
   body {
   margin: 0;
   height: 100vh;
-  width: 100vw;
+  width: 100%;
   font-family: 'Mukta', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
