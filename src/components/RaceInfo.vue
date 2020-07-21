@@ -3,16 +3,16 @@
         <h1>{{ raceName }}</h1>
         <button v-on:click="swapOrder">Results / Grid</button>
 
-        <div class="raceInfo__row">
-            <template v-for="racer in racePodium">
-                <RacePodiumItem :racer="racer" :itemId="racer.position" v-bind:key="racer.position"/>
+        <transition-group name="flip-list" class="raceInfo__row">
+            <template v-for="(racer, index) in racers">
+                <RacePodiumItem :racer="racer" :itemId="index" :key="racer.number" :orderByResult="orderByResult"/>
             </template>
-        </div>
+        </transition-group>
     </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
 import RacePodiumItem from "./RacePodiumItem";
 import _ from 'lodash';
 
@@ -30,20 +30,20 @@ export default {
         raceName() {
             return this.raceResults ? `${this.raceResults?.season} - ${this.raceInfo?.raceName}` : 'Loading';
         },
-        raceOrder() {
-            return this.swapOrder();
+        racers() {
+            if(this.orderByResult) 
+                return this.racePodium;
+            
+            let gridOrdering = _.orderBy(this.racePodium, (el) => {
+                return parseInt(el.grid, 10);
+            }, 'asc');
+            return gridOrdering;
         }
     },
     methods: {
+        ...mapActions(['swapRaceOrdering']),
         swapOrder: function() {
             this.orderByResult = !this.orderByResult;
-
-            /* eslint-disable no-unused-vars */
-            let ordering = this.orderByResult ? 'position' : 'grid';
-            console.log(ordering);
-            return _.orderBy(this.racePodium, function (obj, ordering) {
-                return parseInt(obj[ordering], 10);
-            } , ['asc']);
         }
     }
 
@@ -62,5 +62,9 @@ export default {
 
 .raceInfo__col {
     background-color: pink;
+}
+
+.flip-list-move {
+    transition: transform 1s;
 }
 </style>

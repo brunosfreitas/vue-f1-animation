@@ -53,7 +53,6 @@ export default {
   methods: {
     shuffle: function () {
       this.racers = _.shuffle(this.racers);
-      this.racePodium = _.shuffle(this.racePodium);
       return;
     }
   },

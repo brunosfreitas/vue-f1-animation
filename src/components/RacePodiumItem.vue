@@ -1,7 +1,7 @@
 <template>
-  <div class="racePodiumItem" :class="{'racePodiumItem--even': evenItem }">
-    <div class="racePodiumItem__position" :style="scuderiaColor">
-        {{ racer.position }}
+  <div class="racePodiumItem" :class="{'racePodiumItem--odd': oddItem }">
+    <div class="racePodiumItem__position" :style="positionStyle">
+        {{ orderingNumber }}
     </div>
     <div class="racePodiumItem__info">
       <p class="racePodiumItem__racer">{{ racer.Driver.familyName }}</p>
@@ -13,6 +13,7 @@
   </div>
 </template>
 
+
 <script>
 export default {
   name: 'RacePodiumItem',
@@ -22,17 +23,28 @@ export default {
       type: Object
     },
     itemId: {
-      default: "0",
-      type: String
+      default: 0,
+      type: Number
+    },
+    orderByResult: {
+      default: true,
+      type: Boolean
     }
   },
   computed: {
-    scuderiaColor: function() {
-      const position = this.evenItem ? 'borderLeft' : 'borderRight';
+    positionStyle: function() {
+      if(this.orderByResult) {
+        const position = this.oddItem ? 'borderLeft' : 'borderRight';
+        let style = {};
 
-      let object = {};
-      object[position] = "10px solid " + this.racer.Constructor.color;
-        return object;
+        style[position] = "10px solid " + this.racer.Constructor.color;
+        return { ...style, boxShadow: '10px 10px 0px 0px #f00'};
+      }
+      
+      return { 
+        border: "4px solid #53535d",
+        borderBottom: 'none' 
+      }
     },
     constructorName: function() {
       return this.racer.Constructor.name
@@ -40,8 +52,11 @@ export default {
     timeDiff: function() {
       return this.racer.Time?.time;
     },
-    evenItem: function() {
-      return this.itemId % 2 === 0;
+    oddItem: function() {
+      return this.itemId % 2 === 1;
+    },
+    orderingNumber: function() {
+      return this.orderByResult ? this.racer.position : this.racer.grid;
     }
   }
 }
@@ -57,9 +72,10 @@ export default {
     place-items: center;
     margin-bottom: 80px;
     line-height: 1;
+    
   }
 
-  .racePodiumItem--even {
+  .racePodiumItem--odd {
     margin-top: 60px;
     margin-bottom: 20px;
   }
@@ -67,9 +83,10 @@ export default {
   .racePodiumItem__position {
     font-size: 40px;
     font-weight: 700;
-    padding-left: 16px;
-    padding-right: 16px;
+    padding: 8px 16px;
     line-height: 40px;
+
+    /* transition: border-color 1s; */
   }
 
   .racePodiumItem .racePodiumItem__info {
@@ -85,15 +102,15 @@ export default {
     order: 1;
   }
 
-  .racePodiumItem--even .racePodiumItem__info {
+  .racePodiumItem--odd .racePodiumItem__info {
     order: 2;
   }
 
-  .racePodiumItem--even .racePodiumItem__position {
+  .racePodiumItem--odd .racePodiumItem__position {
     order: 1;
   }
 
-  .racePodiumItem--even .racePodiumItem__imageWrapper {
+  .racePodiumItem--odd .racePodiumItem__imageWrapper {
     order: 3
   }
 
