@@ -4,11 +4,14 @@
         {{ orderingNumber }}
     </div>
     <div class="racePodiumItem__info">
-      <p class="racePodiumItem__racer">{{ racer.Driver.familyName }}</p>
-      <p class="racePodiumItem__constructor">{{ constructorName }}</p>
+
+      <p class="racePodiumItem__racer"><a :href="racer.Driver.url" target="_blank">{{ driverName }}</a></p>
+      <p class="racePodiumItem__constructor"><a :href="racer.Constructor.url" target="_blank">{{ constructorName }}</a></p>
     </div>
     <div class="racePodiumItem__imageWrapper">
-      <img class="racePodiumItem__image" :src="racer.Constructor.carImage" :alt="constructorName"/>
+      <a :href="racer.Constructor.url" target="_blank">
+        <img class="racePodiumItem__image" :src="racer.Constructor.carImage" :alt="constructorName"/>
+      </a>
     </div>
   </div>
 </template>
@@ -17,6 +20,11 @@
 <script>
 export default {
   name: 'RacePodiumItem',
+  data: function () {
+    return {
+      hoverName: false
+    }
+  },
   props: {
     racer: {
       default: null,
@@ -29,20 +37,16 @@ export default {
     orderByResult: {
       default: true,
       type: Boolean
-    }
+    },
   },
   computed: {
     positionStyle: function() {
       if(this.orderByResult) {
-        const position = this.oddItem ? 'borderLeft' : 'borderRight';
-        let style = {};
-
-        style[position] = "10px solid " + this.racer.Constructor.color;
-        return { ...style, boxShadow: '10px 10px 0px 0px #f00'};
+        return { boxShadow: `10px 0px 0px 0px ${this.racer.Constructor.color}, 0px -5px 0px 0px transparent`};
       }
       
       return { 
-        border: "4px solid #53535d",
+        boxShadow: '-5px -5px 0px 0px #53535d, 5px -5px 0px 0px #53535d',
         borderBottom: 'none' 
       }
     },
@@ -57,6 +61,10 @@ export default {
     },
     orderingNumber: function() {
       return this.orderByResult ? this.racer.position : this.racer.grid;
+    },
+    driverName: function() {
+      // return !this.hoverName ? this.racer.Driver.familyName : `${this.racer.Driver.givenName} ${this.racer.Driver.familyName}` ;
+      return this.racer.Driver.familyName;
     }
   }
 }

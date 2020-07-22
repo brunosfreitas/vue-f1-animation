@@ -36,6 +36,17 @@ export default {
   border-color: #262728;
 }
 
+a {
+  text-decoration: none;
+  color: #eeeeee;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+a:hover {
+  color: #bbbbbb;
+}
+
 .app {
   font-size: 16px;
   width: 100%;
