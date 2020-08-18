@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="app">
     <aside class="app__board">
-      <RaceList/>
+      <SeasonList/>
     </aside>
     <div class="app__view">
       <RaceInfo></RaceInfo>
@@ -10,13 +10,13 @@
 </template>
 
 <script>
-import RaceList from './components/RaceList.vue'
+import SeasonList from './components/SeasonList.vue'
 import RaceInfo from './components/RaceInfo.vue'
 
 export default {
   name: 'App',
   components: {
-    RaceList,
+    SeasonList,
     RaceInfo
   }
 }

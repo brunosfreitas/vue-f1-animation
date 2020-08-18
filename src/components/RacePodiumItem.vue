@@ -1,10 +1,9 @@
 <template>
-  <div class="racePodiumItem" :class="{'racePodiumItem--odd': oddItem }">
+  <div class="racePodiumItem" :class="[{'racePodiumItem--odd': oddItem }, positionOffsetClass]">
     <div class="racePodiumItem__position" :style="positionStyle">
         {{ orderingNumber }}
     </div>
     <div class="racePodiumItem__info">
-
       <p class="racePodiumItem__racer"><a :href="racer.Driver.url" target="_blank">{{ driverName }}</a></p>
       <p class="racePodiumItem__constructor"><a :href="racer.Constructor.url" target="_blank">{{ constructorName }}</a></p>
     </div>
@@ -65,6 +64,17 @@ export default {
     driverName: function() {
       // return !this.hoverName ? this.racer.Driver.familyName : `${this.racer.Driver.givenName} ${this.racer.Driver.familyName}` ;
       return this.racer.Driver.familyName;
+    },
+    positionOffsetClass: function() {
+      if(this.racer.positionOffset < 0){
+        return 'racePodiumItem--offsetNegative';
+      } 
+
+      if(this.racer.positionOffset === 0){
+        return 'racePodiumItem--offsetSame';
+      }
+
+      return 'racePodiumItem--offsetPositive';
     }
   }
 }
@@ -80,7 +90,19 @@ export default {
     place-items: center;
     margin-bottom: 80px;
     line-height: 1;
-    
+
+    /* delay leaving transition */
+    transition: transform 1s, color 0.3s 0.6s;
+  }
+  
+  .raceInfo__row--byResult .flip-list-move.racePodiumItem--offsetNegative {
+    color: tomato;
+    transition: transform 1s, color 0.3s;
+  }
+
+  .raceInfo__row--byResult .flip-list-move.racePodiumItem--offsetPositive {
+      color: lawngreen;
+      transition: transform 1s, color 0.3s;
   }
 
   .racePodiumItem--odd {
@@ -130,11 +152,7 @@ export default {
     text-align: left;
   }
 
-  .racePodiumItem__timeDiff {
-    color: tomato;
-    margin: 0;
-  }
-
+ 
   .racePodiumItem__racer {
     margin: 0;
     font-size: 26px;

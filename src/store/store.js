@@ -10,35 +10,86 @@ Vue.use(VueAxios, axios);
 
 
 Vue.axios.defaults.baseURL = "https://ergast.com/api/f1/current/last/results.json";
+const URL_SEASON_LISTING = "https://ergast.com/api/f1/current.json";
+const URL_RACE_RESULT_FIRST = "https://ergast.com/api/f1/current/";
+const URL_RACE_RESULT_LAST = "/results.json";
 
 export default new Vuex.Store({
   state: {
+    seasonInfo: [],
     raceResults: [],
-    viewRacersByGridPosition: false
+    viewRacersByGridPosition: false,
+    lastRoundOfSeason: 0,
+    currentRaceOnDisplay: 0
   },
   getters: {
+    seasonInfo: state => { 
+      return state.seasonInfo;
+    },
     raceInfo: state => { 
-        let race = {...state.raceResults.Races};
+        let race = {...state.raceResults[state.currentRaceOnDisplay]?.Races};
         return race[0];
     },
     racePodium: state => {
-        let podium = {...state.raceResults?.Races}
+        let podium = {...state.raceResults[state.currentRaceOnDisplay]?.Races}
         return podium[0]?.Results;
+    },
+    lastRoundOfSeason: state => { 
+      return state.lastRoundOfSeason;
     }
   },
   actions: {
-    loadUsers({commit}) {
+    // Load current season info
+    loadSeasonInfo({commit}) {
+      Vue.axios.get(URL_SEASON_LISTING).then(result => {
+        commit('INIT_SAVE_SEASON_INFO', result.data.MRData.RaceTable);
+      }).catch(error => {
+        throw new Error(`API ${error}`);
+      });
+    },
+    // Load last race details
+    loadCurrentRaceInfo({commit}) {
       Vue.axios.get('').then(result => {
+        commit('INIT_SAVE_LAST_ROUND_OF_SEASON', result.data.MRData.RaceTable.round);
         commit('SAVE_RACE_RESULT', result.data.MRData.RaceTable);
       }).catch(error => {
         throw new Error(`API ${error}`);
       });
+    },
+    loadRoundInfo({commit}, round) {
+      let url = URL_RACE_RESULT_FIRST + round + URL_RACE_RESULT_LAST;
+      Vue.axios.get(url).then(result => {
+        commit('SAVE_RACE_RESULT', result.data.MRData.RaceTable);
+        commit('SET_CURRENT_RACE_ON_DISPLAY', round);
+      }).catch(error => {
+        throw new Error(`API ${error}`);
+      });
+    },
+    swapRaceView({ commit, state, dispatch }, round) {
+      console.log(round);
+      if(!state.raceResults[round]) {
+        console.log("OMG I DONT HAVE THAT");
+        dispatch('loadRoundInfo', round);
+      }else {
+        console.log("yayhhh I got this")
+        commit('SET_CURRENT_RACE_ON_DISPLAY', round);
+      }
     },
     swapRaceOrdering({commit}) {
       commit('SWAP_RACER_ORDERING');
     }
   },
   mutations: {
+    INIT_SAVE_SEASON_INFO(state, result) {
+      state.seasonInfo = result;
+    },
+    INIT_SAVE_LAST_ROUND_OF_SEASON(state, round) {
+      state.lastRoundOfSeason = parseInt(round);
+      state.currentRaceOnDisplay = parseInt(round);
+    },
+    SET_CURRENT_RACE_ON_DISPLAY(state, result) {
+      state.currentRaceOnDisplay = result;
+    },
     SAVE_RACE_RESULT(state, result) {
       let raceResults = result;
       let enhancedPodium = [];
@@ -51,6 +102,10 @@ export default new Vuex.Store({
         // adding aditional construtor info
         enhancedPodium = podium?.map(el => 
         {
+            // Adding positionOffset
+            el.positionOffset = el.grid - el.position;
+
+            // Adding constructor cart picture and color
             const aditionalInfo = getConstructorExtraInfo(el.Constructor.constructorId);
             el.Constructor = ({...el.Constructor, ...aditionalInfo})
             return el;
@@ -63,7 +118,7 @@ export default new Vuex.Store({
         console.log(e);
       }
 
-      state.raceResults = raceResults;
+      state.raceResults[raceResults.round] = raceResults;
     },
     SWAP_RACER_ORDERING(state) {
       state.viewRacersByGridPosition = !state.viewRacersByGridPosition;

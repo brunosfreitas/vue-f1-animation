@@ -10,9 +10,7 @@
             </div>
         </div>
 
-        
-
-        <transition-group name="flip-list" class="raceInfo__row">
+        <transition-group name="flip-list" class="raceInfo__row" :class="{ 'raceInfo__row--byResult': orderByResult}">
             <template v-for="(racer, index) in racers">
                 <RacePodiumItem :racer="racer" :itemId="index" :key="racer.number" :orderByResult="orderByResult"/>
             </template>
@@ -113,11 +111,4 @@ export default {
     grid-template-columns: 1fr 1fr;
 }
 
-.raceInfo__col {
-    background-color: pink;
-}
-
-.flip-list-move {
-    transition: transform 1s;
-}
 </style>
