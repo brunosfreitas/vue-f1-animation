@@ -4,6 +4,7 @@
     <ul class="seasonList__list">
       <li v-for="(race, index) in seasonInfo.Races" :key="index" class="seasonList__item" :class="raceClass(race.round)" @click="shouldSwapRaceView(race.round)">
         {{race.round}} - {{race.raceName}}
+        <!-- <p class="seasonList__circuit">{{race.Circuit.circuitName}}</p> -->
       </li>
     </ul>
   </div>
@@ -55,6 +56,10 @@ export default {
 
   .seasonList__title {
 
+  }
+
+  .seasonList__circuit{
+    margin: 0 0 6px 6px;
   }
 
   .seasonList__list {

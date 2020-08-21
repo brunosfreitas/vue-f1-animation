@@ -11,6 +11,7 @@ Vue.use(VueAxios, axios);
 
 Vue.axios.defaults.baseURL = "https://ergast.com/api/f1/current/last/results.json";
 const URL_SEASON_LISTING = "https://ergast.com/api/f1/current.json";
+const URL_DRIVER_STANDINGS = "https://ergast.com/api/f1/current/driverStandings.json";
 const URL_RACE_RESULT_FIRST = "https://ergast.com/api/f1/current/";
 const URL_RACE_RESULT_LAST = "/results.json";
 
@@ -18,6 +19,7 @@ export default new Vuex.Store({
   state: {
     seasonInfo: [],
     raceResults: [],
+    driverStandings: [],
     viewRacersByGridPosition: false,
     lastRoundOfSeason: 0,
     currentRaceOnDisplay: 0
@@ -29,6 +31,13 @@ export default new Vuex.Store({
     raceInfo: state => { 
         let race = {...state.raceResults[state.currentRaceOnDisplay]?.Races};
         return race[0];
+    },
+    lastRaceInfo: state => { 
+      let race = {...state.raceResults[state.lastRoundOfSeason]?.Races};
+      return race[0];
+    },
+    driverStandings: state => {
+      return state.driverStandings;
     },
     racePodium: state => {
         let podium = {...state.raceResults[state.currentRaceOnDisplay]?.Races}
@@ -56,11 +65,20 @@ export default new Vuex.Store({
         throw new Error(`API ${error}`);
       });
     },
+    // Load an specific race details
     loadRoundInfo({commit}, round) {
       let url = URL_RACE_RESULT_FIRST + round + URL_RACE_RESULT_LAST;
       Vue.axios.get(url).then(result => {
         commit('SAVE_RACE_RESULT', result.data.MRData.RaceTable);
         commit('SET_CURRENT_RACE_ON_DISPLAY', round);
+      }).catch(error => {
+        throw new Error(`API ${error}`);
+      });
+    },
+    // Drivers points
+    loadDriverStandings({commit}) {
+      Vue.axios.get(URL_DRIVER_STANDINGS).then(result => {
+        commit('INIT_SAVE_DRIVER_STANDINGS', result.data.MRData.StandingsTable.StandingsLists[0]);
       }).catch(error => {
         throw new Error(`API ${error}`);
       });
@@ -86,6 +104,9 @@ export default new Vuex.Store({
     INIT_SAVE_LAST_ROUND_OF_SEASON(state, round) {
       state.lastRoundOfSeason = parseInt(round);
       state.currentRaceOnDisplay = parseInt(round);
+    },
+    INIT_SAVE_DRIVER_STANDINGS(state, result) {
+      state.driverStandings = result;
     },
     SET_CURRENT_RACE_ON_DISPLAY(state, result) {
       state.currentRaceOnDisplay = result;

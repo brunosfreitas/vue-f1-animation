@@ -2,8 +2,8 @@
     <div class="raceInfo">
         <div class="raceInfo__header">
             <div class="raceInfo__wrapper">
-                <h1 class="raceInfo__title"><a :href="this.raceInfo.url" target="_blank">{{ this.raceInfo.raceName }}</a></h1>
-                <em class="raceInfo__subtitle">{{ this.raceResults.season }}</em>
+                <h1 class="raceInfo__title"><a :href="raceURL" target="_blank">{{ this.raceInfo.raceName }}</a></h1>
+                <em class="raceInfo__subtitle">{{ this.raceInfo.season }}</em>
             </div>
             <div class="raceInfo__wrapperToggler">
                 <button class="raceInfo__button" v-on:click="swapOrder">Results / Grid</button>
@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import RacePodiumItem from "./RacePodiumItem";
 import _ from 'lodash';
 
@@ -32,10 +32,9 @@ export default {
         }
     },
     computed: {
-        ...mapState(['raceResults']),
         ...mapGetters(['raceInfo', 'racePodium']),
         raceName() {
-            return this.raceResults ? `${this.raceResults?.season} - ${this.raceInfo?.raceName}` : 'Loading';
+            return this.raceInfo ? `${this.raceInfo?.season} - ${this.raceInfo?.raceName}` : 'Loading';
         },
         racers() {
             if(this.orderByResult) 
@@ -45,6 +44,9 @@ export default {
                 return parseInt(el.grid, 10);
             }, 'asc');
             return gridOrdering;
+        },
+        raceURL() {
+            return this.raceInfo ? this.raceInfo.url : '';
         }
     },
     methods: {

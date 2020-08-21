@@ -2,6 +2,7 @@
   <div id="app" class="app">
     <aside class="app__board">
       <SeasonList/>
+      <SeasonStanding/>
     </aside>
     <div class="app__view">
       <RaceInfo></RaceInfo>
@@ -11,12 +12,14 @@
 
 <script>
 import SeasonList from './components/SeasonList.vue'
+import SeasonStanding from './components/SeasonStanding.vue'
 import RaceInfo from './components/RaceInfo.vue'
 
 export default {
   name: 'App',
   components: {
     SeasonList,
+    SeasonStanding,
     RaceInfo
   }
 }
